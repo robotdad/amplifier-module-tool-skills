@@ -1,0 +1,63 @@
+---
+profile:
+  name: skills-example
+  version: "1.0.0"
+  description: "Example profile demonstrating skills support"
+
+session:
+  context: context-skills
+  config:
+    base_context: context-simple
+    skills_dir: .amplifier/skills
+    auto_inject_metadata: true
+    max_tokens: 200000
+
+providers:
+  - module: provider-anthropic
+    name: claude
+    config:
+      model: claude-sonnet-4-5-20250929
+      max_tokens: 8192
+
+tools:
+  - module: tool-filesystem
+  - module: tool-bash
+  - module: tool-skills
+    config:
+      skills_dir: .amplifier/skills
+
+loop:
+  module: loop-basic
+  config:
+    max_turns: 10
+
+hooks:
+  - module: hooks-logging
+    config:
+      log_file: amplifier.log.jsonl
+---
+
+# Skills-Enabled Agent
+
+You are an Amplifier development assistant with access to skills.
+
+## Available Resources
+
+Skills are available to provide specialized knowledge:
+- Check available skills with your system instruction
+- Load skills explicitly when needed: use load_skill tool
+- Reference skills by name in your thinking
+
+## Workflow
+
+When working on tasks:
+1. Check if relevant skills exist (you'll see them listed)
+2. Load appropriate skills for domain expertise
+3. Follow guidelines from loaded skills
+4. Create high-quality, standards-compliant work
+
+## Skills Philosophy
+
+- **Progressive disclosure**: Only load what you need
+- **Explicit over implicit**: Call load_skill explicitly
+- **Knowledge reuse**: Same skills across different tasks
