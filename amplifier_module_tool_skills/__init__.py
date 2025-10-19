@@ -67,6 +67,13 @@ class SkillsTool:
         self.config = config
         self.coordinator = coordinator
 
+        # DEBUG: Write config to file
+        import json
+
+        debug_file = Path("/tmp/skills_tool_config.json")
+        with open(debug_file, "w") as f:
+            json.dump({"config": config, "has_skills_dirs": "skills_dirs" in config}, f, indent=2)
+
         # Support both single and multi-source configuration
         if "skills_dirs" in config:
             # Multi-source mode
