@@ -27,9 +27,10 @@ async def mount(coordinator: Any, config: dict[str, Any] | None = None) -> None:
         Optional cleanup function
     """
     config = config or {}
+    logger.info(f"Mounting SkillsTool with config: {config}")
     tool = SkillsTool(config, coordinator)
     await coordinator.mount("tools", tool, name=tool.name)
-    logger.info("Mounted SkillsTool")
+    logger.info(f"Mounted SkillsTool with {len(tool.skills)} skills from {len(tool.skills_dirs)} sources")
 
     # Emit discovery event
     await coordinator.hooks.emit(
