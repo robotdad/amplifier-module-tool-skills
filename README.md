@@ -121,20 +121,25 @@ Configure skills once in the context section - tool-skills reads from capability
 session:
   context:
     module: context-skills
+    source: git+https://github.com/robotdad/amplifier-module-context-skills@main
     config:
       skills_dirs:  # Single configuration
         - ~/anthropic-skills
         - .amplifier/skills
 
 tools:
-  - module: tool-skills  # No config needed - reads from context capability
+  - module: tool-skills
+    source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
 ```
+
+**Note:** The `source:` fields enable auto-download from git. Users need collaborator access to your private repos and GitHub authentication configured.
 
 ### Standalone (Without context-skills)
 
 ```yaml
 tools:
   - module: tool-skills
+    source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
     config:
       skills_dirs:  # Configure directly if not using context-skills
         - ~/anthropic-skills

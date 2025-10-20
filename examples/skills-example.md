@@ -9,6 +9,7 @@ session:
     module: loop-basic
   context:
     module: context-skills
+    source: git+https://github.com/robotdad/amplifier-module-context-skills@main
     config:
       base_context: context-simple
       skills_dirs:  # Single configuration - tool-skills reads from capability
@@ -26,7 +27,8 @@ providers:
 tools:
   - module: tool-filesystem
   - module: tool-bash
-  - module: tool-skills  # No config needed - reads from context capability
+  - module: tool-skills
+    source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
 
 hooks:
   - module: hooks-logging
