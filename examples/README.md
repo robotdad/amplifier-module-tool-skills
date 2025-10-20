@@ -1,6 +1,12 @@
 # Skills Modules Usage Examples
 
-This directory contains examples showing how to use the skills modules.
+This directory contains examples showing how to use the skills modules with Amplifier.
+
+## What Are Skills?
+
+Skills are **folders of instructions, scripts, and resources that Claude loads dynamically** to improve performance on specialized tasks. See [Anthropic Skills](https://github.com/anthropics/skills) for the complete specification.
+
+This module enables Anthropic Skills in Amplifier with progressive disclosure and multi-source support.
 
 ## Files
 
@@ -121,11 +127,15 @@ Agent sees:
 
 ### With Tool-Skills Module
 
-Explicit loading:
+Explicit loading with multiple sources:
 
 ```yaml
 tools:
   - module: tool-skills
+    config:
+      skills_dirs:  # Multiple directories
+        - ~/anthropic-skills  # Cloned from github.com/anthropics/skills
+        - .amplifier/skills   # Project-specific skills
 ```
 
 Agent can:
@@ -133,6 +143,21 @@ Agent can:
 - Search: `load_skill(search="python")`
 - Info: `load_skill(info="skill-name")`
 - Load: `load_skill(skill_name="skill-name")`
+
+### Using Anthropic Skills
+
+```bash
+# Clone Anthropic's skills repository
+git clone https://github.com/anthropics/skills ~/anthropic-skills
+
+# Configure in your profile to use both Anthropic skills and your own
+config:
+  skills_dirs:
+    - ~/anthropic-skills
+    - .amplifier/skills
+```
+
+All skills from both directories become available to your agent.
 
 ### Together (Recommended)
 

@@ -1,6 +1,41 @@
 # Amplifier Skills Tool Module
 
-Tool for loading domain knowledge from skills.
+Tool for loading domain knowledge from skills in Amplifier.
+
+## What Are Skills?
+
+Skills are **folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks** (see [Anthropic Skills](https://github.com/anthropics/skills)).
+
+This module brings Anthropic Skills support to Amplifier, enabling:
+- Progressive disclosure of domain knowledge
+- Reusable instruction packages for specialized tasks
+- Integration with Anthropic's skills ecosystem
+
+## Quick Start with Anthropic Skills
+
+```bash
+# 1. Clone Anthropic's skills repository
+git clone https://github.com/anthropics/skills ~/anthropic-skills
+
+# 2. Install this module
+cd amplifier-module-tool-skills
+uv pip install -e .
+
+# 3. Configure in your Amplifier profile
+cat >> .amplifier/profiles/my-profile.md << 'EOF'
+tools:
+  - module: tool-skills
+    config:
+      skills_dirs:
+        - ~/anthropic-skills
+        - .amplifier/skills
+EOF
+
+# 4. Use with Amplifier
+amplifier run --profile my-profile "List available skills"
+```
+
+All Anthropic skills are now available to your agent!
 
 ## Prerequisites
 
@@ -78,19 +113,51 @@ Load domain knowledge from an available skill.
 
 ## Configuration
 
+### Single Directory
+
 ```yaml
 tools:
   - module: tool-skills
     config:
-      skills_dir: .amplifier/skills  # Where to find skills
+      skills_dir: .amplifier/skills  # Default location
 ```
+
+### Multiple Directories (Recommended)
+
+```yaml
+tools:
+  - module: tool-skills
+    config:
+      skills_dirs:  # Plural - multiple sources
+        - /path/to/anthropic-skills  # Cloned from github.com/anthropics/skills
+        - .amplifier/skills          # Project-specific skills
+```
+
+### Using Anthropic Skills
+
+```bash
+# Clone Anthropic's skills repository
+git clone https://github.com/anthropics/skills ~/anthropic-skills
+
+# Configure in your profile
+tools:
+  - module: tool-skills
+    config:
+      skills_dirs:
+        - ~/anthropic-skills
+        - .amplifier/skills
+```
+
+This makes all Anthropic skills plus your custom skills available to the agent.
 
 ## Skills Directory Structure
 
+Skills follow the [Anthropic Skills format](https://github.com/anthropics/skills):
+
 ```
-.amplifier/skills/
+skills-directory/
 ├── design-patterns/
-│   ├── SKILL.md
+│   ├── SKILL.md          # Required: name and description in YAML frontmatter
 │   └── examples/
 │       └── module-pattern.md
 ├── python-standards/
@@ -101,22 +168,26 @@ tools:
     └── SKILL.md
 ```
 
+Default location: `.amplifier/skills/` (can configure multiple directories)
+
 ## SKILL.md Format
 
-Required YAML frontmatter with markdown body:
+Skills use the [Anthropic Skills format](https://github.com/anthropics/skills) - YAML frontmatter with markdown body:
 
 ```markdown
 ---
-name: skill-name
-description: What this skill does and when to use it. Include when to use it.
+name: skill-name  # Required: unique identifier (lowercase with hyphens)
+description: What this skill does and when to use it  # Required: complete explanation
 version: 1.0.0
 license: MIT
-metadata:
+metadata:  # Optional
   category: development
   complexity: medium
 ---
 
 # Skill Name
+
+Instructions Claude follows when skill is loaded.
 
 ## Quick Start
 
@@ -126,14 +197,13 @@ metadata:
 
 [Step-by-step guidance]
 
-## Advanced Features
-
-See additional-guide.md for details.
-
 ## Examples
 
 [Concrete examples]
 ```
+
+**Required fields:** `name` and `description` in YAML frontmatter
+**Format:** See [Anthropic Skills specification](https://github.com/anthropics/skills) for complete details
 
 ## Usage Examples
 
