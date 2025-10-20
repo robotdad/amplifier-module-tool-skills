@@ -4,7 +4,7 @@ Tool for loading domain knowledge from skills in Amplifier.
 
 ## What Are Skills?
 
-Skills are **folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks** (see [Anthropic Skills](https://github.com/anthropics/skills)).
+Skills are **folders of instructions, scripts, and resources that agents load dynamically to improve performance on specialized tasks** (see [Anthropic Skills](https://github.com/anthropics/skills)).
 
 This module brings Anthropic Skills support to Amplifier, enabling:
 - Progressive disclosure of domain knowledge
@@ -187,7 +187,7 @@ metadata:  # Optional
 
 # Skill Name
 
-Instructions Claude follows when skill is loaded.
+Instructions the agent follows when skill is loaded.
 
 ## Quick Start
 

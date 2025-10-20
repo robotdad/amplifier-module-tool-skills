@@ -38,7 +38,7 @@ hooks:
 
 # Skills-Enabled Profile
 
-This profile demonstrates Amplifier's support for [Anthropic Skills](https://github.com/anthropics/skills) - folders of instructions that Claude loads dynamically for specialized tasks.
+This profile demonstrates Amplifier's support for [Anthropic Skills](https://github.com/anthropics/skills) - folders of instructions that agents load dynamically for specialized tasks.
 
 ## What This Enables
 
