@@ -5,19 +5,21 @@ profile:
   description: "Example profile demonstrating skills support"
 
 session:
-  context: context-skills
-  config:
-    base_context: context-simple
-    skills_dir: .amplifier/skills
-    auto_inject_metadata: true
-    max_tokens: 200000
+  orchestrator:
+    module: loop-basic
+  context:
+    module: context-skills
+    config:
+      base_context: context-simple
+      skills_dir: .amplifier/skills
+      auto_inject_metadata: true
+      max_tokens: 200000
 
 providers:
   - module: provider-anthropic
-    name: claude
     config:
-      model: claude-sonnet-4-5-20250929
-      max_tokens: 8192
+      priority: 1
+      default_model: claude-sonnet-4-5
 
 tools:
   - module: tool-filesystem
@@ -26,15 +28,8 @@ tools:
     config:
       skills_dir: .amplifier/skills
 
-loop:
-  module: loop-basic
-  config:
-    max_turns: 10
-
 hooks:
   - module: hooks-logging
-    config:
-      log_file: amplifier.log.jsonl
 ---
 
 # Skills-Enabled Agent

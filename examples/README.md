@@ -4,7 +4,7 @@ This directory contains examples showing how to use the skills modules.
 
 ## Files
 
-### `profile-with-skills.yaml`
+### `skills-example.md`
 
 Complete Amplifier profile with skills support enabled.
 
@@ -17,6 +17,9 @@ Complete Amplifier profile with skills support enabled.
 **Usage:**
 
 ```bash
+# Copy profile to your project
+cp examples/skills-example.md .amplifier/profiles/
+
 # Create skills directory
 mkdir -p .amplifier/skills
 
@@ -24,7 +27,7 @@ mkdir -p .amplifier/skills
 cp -r amplifier-module-tool-skills/tests/fixtures/skills/* .amplifier/skills/
 
 # Run with profile
-amplifier run --profile examples/profile-with-skills.yaml "Show me available skills"
+amplifier run --profile skills-example "Show me available skills"
 ```
 
 ## Creating Your Own Skills
