@@ -11,8 +11,8 @@ session:
     module: context-skills
     config:
       base_context: context-simple
-      skills_dirs:  # Multiple sources supported
-        - .amplifier/skills  # Project-specific skills
+      skills_dirs:  # Single configuration - tool-skills reads from capability
+        - .amplifier/skills
         # - ~/anthropic-skills  # Uncomment if you cloned github.com/anthropics/skills
       auto_inject_metadata: true
       max_tokens: 200000
@@ -26,11 +26,7 @@ providers:
 tools:
   - module: tool-filesystem
   - module: tool-bash
-  - module: tool-skills
-    config:
-      skills_dirs:  # Same directories as context
-        - .amplifier/skills
-        # - ~/anthropic-skills  # Uncomment if you cloned github.com/anthropics/skills
+  - module: tool-skills  # No config needed - reads from context capability
 
 hooks:
   - module: hooks-logging

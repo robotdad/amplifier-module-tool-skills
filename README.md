@@ -113,25 +113,35 @@ Load domain knowledge from an available skill.
 
 ## Configuration
 
-### Single Directory
+### With context-skills (Recommended)
+
+Configure skills once in the context section - tool-skills reads from capability:
+
+```yaml
+session:
+  context:
+    module: context-skills
+    config:
+      skills_dirs:  # Single configuration
+        - ~/anthropic-skills
+        - .amplifier/skills
+
+tools:
+  - module: tool-skills  # No config needed - reads from context capability
+```
+
+### Standalone (Without context-skills)
 
 ```yaml
 tools:
   - module: tool-skills
     config:
-      skills_dir: .amplifier/skills  # Default location
+      skills_dirs:  # Configure directly if not using context-skills
+        - ~/anthropic-skills
+        - .amplifier/skills
 ```
 
-### Multiple Directories (Recommended)
-
-```yaml
-tools:
-  - module: tool-skills
-    config:
-      skills_dirs:  # Plural - multiple sources
-        - /path/to/anthropic-skills  # Cloned from github.com/anthropics/skills
-        - .amplifier/skills          # Project-specific skills
-```
+**Default:** If not configured, uses `.amplifier/skills`
 
 ### Using Anthropic Skills
 
@@ -139,16 +149,14 @@ tools:
 # Clone Anthropic's skills repository
 git clone https://github.com/anthropics/skills ~/anthropic-skills
 
-# Configure in your profile
-tools:
-  - module: tool-skills
-    config:
-      skills_dirs:
-        - ~/anthropic-skills
-        - .amplifier/skills
+# Add to your profile
+skills:
+  dirs:
+    - ~/anthropic-skills
+    - .amplifier/skills
 ```
 
-This makes all Anthropic skills plus your custom skills available to the agent.
+All skills from both directories become available to the agent.
 
 ## Skills Directory Structure
 
@@ -265,21 +273,30 @@ result = await tool.execute({"skill_name": "python-standards"})
 
 ## Integration with context-skills
 
-Works seamlessly with `amplifier-module-context-skills`:
+**Recommended:** Use with `amplifier-module-context-skills` for best experience.
+
+Configure skills once - tool-skills reads from context capability:
 
 ```yaml
 session:
-  context: context-skills  # Auto-injects metadata
+  context:
+    module: context-skills
+    config:
+      skills_dirs:  # Single configuration point
+        - ~/anthropic-skills
+        - .amplifier/skills
 
 tools:
-  - module: tool-skills    # Explicit loading
+  - module: tool-skills  # No config - reads from capability
 ```
 
 **How they work together:**
-1. Context injects metadata into system instruction
-2. Agent sees available skills automatically
-3. Agent calls tool to load full content when needed
+1. Context discovers skills and registers capability
+2. Tool reads from capability (no duplicate discovery)
+3. Agent sees skills automatically and can load on demand
 4. Context tracks loaded skills (prevents redundant loading)
+
+**Single configuration** via capability registry - no duplication needed.
 
 ## Creating Skills
 

@@ -125,24 +125,22 @@ Agent sees:
 **skill-name**: Description of what it does...
 ```
 
-### With Tool-Skills Module
+### Complete Configuration (Recommended)
 
-Explicit loading with multiple sources:
+Configure skills once in context - tool reads from capability:
 
 ```yaml
-tools:
-  - module: tool-skills
+session:
+  context:
+    module: context-skills
     config:
-      skills_dirs:  # Multiple directories
-        - ~/anthropic-skills  # Cloned from github.com/anthropics/skills
-        - .amplifier/skills   # Project-specific skills
-```
+      skills_dirs:  # Single configuration point
+        - ~/anthropic-skills
+        - .amplifier/skills
 
-Agent can:
-- List: `load_skill(list=true)`
-- Search: `load_skill(search="python")`
-- Info: `load_skill(info="skill-name")`
-- Load: `load_skill(skill_name="skill-name")`
+tools:
+  - module: tool-skills  # No config - reads from capability
+```
 
 ### Using Anthropic Skills
 
@@ -150,14 +148,21 @@ Agent can:
 # Clone Anthropic's skills repository
 git clone https://github.com/anthropics/skills ~/anthropic-skills
 
-# Configure in your profile to use both Anthropic skills and your own
-config:
-  skills_dirs:
-    - ~/anthropic-skills
-    - .amplifier/skills
+# Update profile context config
+session:
+  context:
+    module: context-skills
+    config:
+      skills_dirs:
+        - ~/anthropic-skills
+        - .amplifier/skills
 ```
 
-All skills from both directories become available to your agent.
+All skills from both directories become available. The agent can:
+- See available skills (automatic via context)
+- List: `load_skill(list=true)`
+- Search: `load_skill(search="python")`
+- Load: `load_skill(skill_name="skill-name")`
 
 ### Together (Recommended)
 

@@ -67,33 +67,35 @@ class SkillsTool:
         self.config = config
         self.coordinator = coordinator
 
-        # DEBUG: Log what config we received
-        logger.warning(f"[DEBUG] SkillsTool.__init__ - config keys: {list(config.keys())}")
-        logger.warning(f"[DEBUG] SkillsTool.__init__ - has skills_dirs: {'skills_dirs' in config}")
-        logger.warning(f"[DEBUG] SkillsTool.__init__ - has skills_dir: {'skills_dir' in config}")
-        if "skills_dirs" in config:
-            logger.warning(f"[DEBUG] SkillsTool.__init__ - skills_dirs = {config['skills_dirs']}")
+        # Try to use skills from context-skills capability first
+        skills_from_context = coordinator.get_capability("skills.registry")
+        skills_dirs_from_context = coordinator.get_capability("skills.directories")
 
-        # Support both single and multi-source configuration
-        if "skills_dirs" in config:
-            # Multi-source mode
+        if skills_from_context and skills_dirs_from_context:
+            # Reuse discovery from context-skills module
+            self.skills = skills_from_context
+            self.skills_dirs = skills_dirs_from_context
+            logger.info(
+                f"Using skills from context capability: {len(self.skills)} skills from {len(self.skills_dirs)} directories"
+            )
+        elif "skills_dirs" in config:
+            # Fall back to own configuration
             skills_dirs = config["skills_dirs"]
             if isinstance(skills_dirs, str):
                 skills_dirs = [skills_dirs]
-            self.skills_dirs = [Path(d) for d in skills_dirs]
+            self.skills_dirs = [Path(d).expanduser() for d in skills_dirs]
             self.skills = discover_skills_multi_source(self.skills_dirs)
-            logger.info(f"Discovered {len(self.skills)} skills from {len(self.skills_dirs)} sources")
+            logger.info(f"Discovered {len(self.skills)} skills from module config")
         elif "skills_dir" in config:
-            # Single-source mode (backward compatible)
-            skills_dir = config["skills_dir"]
-            self.skills_dirs = [Path(skills_dir)]
-            self.skills = discover_skills(Path(skills_dir))
-            logger.info(f"Discovered {len(self.skills)} skills from {skills_dir}")
+            # Single directory from config
+            self.skills_dirs = [Path(config["skills_dir"]).expanduser()]
+            self.skills = discover_skills(self.skills_dirs[0])
+            logger.info(f"Discovered {len(self.skills)} skills from module config")
         else:
-            # Default: use standard search paths
+            # Fall back to default
             self.skills_dirs = get_default_skills_dirs()
             self.skills = discover_skills_multi_source(self.skills_dirs)
-            logger.info(f"Discovered {len(self.skills)} skills from default sources")
+            logger.info(f"Discovered {len(self.skills)} skills from default directories")
 
     @property
     def input_schema(self) -> dict:
