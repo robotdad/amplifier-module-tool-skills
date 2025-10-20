@@ -132,8 +132,6 @@ tools:
     source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
 ```
 
-**Note:** The `source:` fields enable auto-download from git. Users need collaborator access to your private repos and GitHub authentication configured.
-
 ### Standalone (Without context-skills)
 
 ```yaml
