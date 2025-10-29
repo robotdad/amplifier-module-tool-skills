@@ -6,7 +6,8 @@ profile:
 
 session:
   orchestrator:
-    module: loop-basic
+    module: loop-streaming
+    source: git+https://github.com/microsoft/amplifier-module-loop-streaming@main
   context:
     module: context-skills
     source: git+https://github.com/robotdad/amplifier-module-context-skills@main
@@ -20,18 +21,24 @@ session:
 
 providers:
   - module: provider-anthropic
+    source: git+https://github.com/microsoft/amplifier-module-provider-anthropic@main
     config:
       priority: 1
       default_model: claude-sonnet-4-5
 
 tools:
   - module: tool-filesystem
+    source: git+https://github.com/microsoft/amplifier-module-tool-filesystem@main
   - module: tool-bash
+    source: git+https://github.com/microsoft/amplifier-module-tool-bash@main
   - module: tool-skills
     source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
 
 hooks:
+  - module: hooks-streaming-ui
+    source: git+https://github.com/microsoft/amplifier-module-hooks-streaming-ui@main
   - module: hooks-logging
+    source: git+https://github.com/microsoft/amplifier-module-hooks-logging@main
 ---
 
 # Skills-Enabled Profile

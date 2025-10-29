@@ -68,8 +68,8 @@ class SkillsTool:
         self.coordinator = coordinator
 
         # Try to use skills from context-skills capability first
-        skills_from_context = coordinator.get_capability("skills.registry")
-        skills_dirs_from_context = coordinator.get_capability("skills.directories")
+        skills_from_context = coordinator.get_capability("skills.registry") if coordinator else None
+        skills_dirs_from_context = coordinator.get_capability("skills.directories") if coordinator else None
 
         if skills_from_context and skills_dirs_from_context:
             # Reuse discovery from context-skills module
