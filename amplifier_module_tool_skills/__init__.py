@@ -53,7 +53,9 @@ class SkillsTool:
         "Load domain knowledge from an available skill. Skills provide "
         "specialized knowledge, workflows, best practices, and standards. "
         "Use when you need domain expertise, coding guidelines, or "
-        "architectural patterns. Call with list=true to see all skills."
+        "architectural patterns. Call with list=true to see all skills. "
+        "When loaded, returns skill_directory path - use this to read companion "
+        "files referenced in the skill (e.g., skill_directory + '/reference/file.md')."
     )
 
     def __init__(self, config: dict[str, Any], coordinator: Any | None = None):
@@ -277,6 +279,7 @@ class SkillsTool:
             output={
                 "content": f"# {skill_name}\n\n{body}",
                 "skill_name": skill_name,
-                "loaded_from": metadata.source,
+                "skill_directory": str(metadata.path.parent),  # Actual skill folder for companion files
+                "loaded_from": metadata.source,  # Source directory for context
             },
         )
