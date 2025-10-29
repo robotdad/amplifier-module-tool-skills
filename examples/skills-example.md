@@ -9,14 +9,9 @@ session:
     module: loop-streaming
     source: git+https://github.com/microsoft/amplifier-module-loop-streaming@main
   context:
-    module: context-skills
-    source: git+https://github.com/robotdad/amplifier-module-context-skills@main
+    module: context-simple
+    source: git+https://github.com/microsoft/amplifier-module-context-simple@main
     config:
-      base_context: context-simple
-      skills_dirs:  # Single configuration - tool-skills reads from capability
-        - .amplifier/skills
-        # - ~/anthropic-skills  # Uncomment if you cloned github.com/anthropics/skills
-      auto_inject_metadata: true
       max_tokens: 200000
 
 providers:
@@ -33,6 +28,10 @@ tools:
     source: git+https://github.com/microsoft/amplifier-module-tool-bash@main
   - module: tool-skills
     source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
+    config:
+      skills_dirs:  # Configure directly when not using context-skills
+        - .amplifier/skills
+        # - ~/anthropic-skills  # Uncomment if you cloned github.com/anthropics/skills
 
 hooks:
   - module: hooks-streaming-ui
@@ -47,10 +46,12 @@ This profile demonstrates Amplifier's support for [Anthropic Skills](https://git
 
 ## What This Enables
 
-Skills provide progressive disclosure of domain knowledge:
-- See available skills automatically in system instruction
+Skills provide on-demand loading of domain knowledge:
+- Discover skills via `load_skill(list=true)`
 - Load full content only when needed (60-65% token savings)
 - Support multiple skill sources (Anthropic + your own)
+
+**Note**: This profile uses `tool-skills` in standalone mode (without `context-skills`). Skills are discovered on-demand rather than auto-injected into system instruction.
 
 ## Quick Start
 

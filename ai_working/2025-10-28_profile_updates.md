@@ -182,3 +182,76 @@ hooks:
 2. **For module updates**: Check both example profiles AND code for consistency
 3. **For type safety**: Run `make check` before committing
 4. **For validation**: Test with actual execution, not assumptions
+
+## Issue #2: context-skills Base Context Loading Failure (Discovered During Testing)
+
+### Problem
+
+When testing the updated profile, discovered that `context-skills` cannot load base context from git sources:
+
+```
+Failed to load context manager 'context-skills': Base context 'context-simple' not found in entry points
+```
+
+### Root Cause
+
+The `context-skills` module (lines 38-50 in `__init__.py`) tries to load the base context via `entry_points()`:
+- Entry points only work for installed packages
+- Git sources aren't installed as entry points
+- Therefore loading `context-simple` from git source fails
+
+This is a **fundamental design issue** with `context-skills` - it assumes base contexts are installed packages, not git sources.
+
+### Solution (Workaround)
+
+Changed profile to use `tool-skills` in standalone mode:
+- Use `context-simple` directly instead of `context-skills` wrapper
+- Configure `skills_dirs` in `tool-skills` config instead of context config
+- Skills still work, but without auto-injection into system instruction
+
+**Updated profile pattern:**
+```yaml
+session:
+  context:
+    module: context-simple  # Direct, not wrapped
+    source: git+https://github.com/microsoft/amplifier-module-context-simple@main
+
+tools:
+  - module: tool-skills
+    source: git+https://github.com/robotdad/amplifier-module-tool-skills@main
+    config:
+      skills_dirs:  # Configure directly
+        - .amplifier/skills
+```
+
+### Trade-offs
+
+**Standalone mode (current solution)**:
+- ✅ Works with git sources
+- ✅ Skills discovery and loading work
+- ❌ No auto-injection of skills metadata
+- ❌ Agent must explicitly discover skills via `load_skill(list=true)`
+
+**With context-skills (broken with git sources)**:
+- ❌ Requires installed packages for base context
+- ✅ Auto-injects skills metadata into system instruction
+- ✅ Agent sees skills automatically
+
+### Long-term Fix Needed
+
+The `context-skills` module needs to be updated to support loading base context from git sources via the coordinator/loader, not just from installed entry points.
+
+## Updated Test Results
+
+After fixing context-skills issue:
+- ✅ Profile loads successfully
+- ✅ Skills directory discovered
+- ✅ Skills tool available
+- ⏳ Pending: Test actual skills loading
+
+## Action Items
+
+1. ✅ **Update profile** - Use standalone tool-skills mode
+2. **Fix context-skills module** - Support git source base contexts (separate issue/PR)
+3. **Test skills functionality** - Verify discovery and loading work
+4. **Document modes** - Clarify standalone vs context-skills usage
